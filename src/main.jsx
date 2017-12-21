@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {FetchSomething} from 'components/fetch-something';
+import {Provider} from 'react-redux';
+import {FileHandling} from 'components/file-handling';
+import {store} from './store';
+
 
 ReactDOM.render(
-    <FetchSomething />,
+    <Provider store={store}>
+        <FileHandling />
+    </Provider>,
     document.getElementById('root')
 );
