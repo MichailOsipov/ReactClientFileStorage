@@ -16,6 +16,7 @@ import {
 } from './selectors';
 
 import {FILE_HANDLING_FORM_NAME} from './constants';
+import {WholeFileReader} from './whole-file-reader';
 
 @connect(state => ({
     userToSave: userToSaveSelector(state),
@@ -56,6 +57,7 @@ export class FileHandling extends PureComponent {
                 <AddFile onAddFile={this.addFileToFileSystem} />
                 <LoadFile onLoadFile={this.loadFilesByHash} />
                 <FilesList files={this.state.files} />
+                <WholeFileReader />
             </div>
         );
     }

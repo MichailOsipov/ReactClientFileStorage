@@ -5,8 +5,8 @@ export const FilesList = ({
     files
 }) => (
     <div>
-        {files.map((file, key) => (
-            <div key={`file${key}`}>{file}</div>
+        {files.map(file => (
+            <div key={file}>{file}</div>
         ))}
     </div>
 );
