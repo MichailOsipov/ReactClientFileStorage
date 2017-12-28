@@ -5,8 +5,8 @@ export const AddFile = ({
     onSelectFile
 }) => (
     <div>
-        <label>Добавить файл:</label>
-        <input type="file" onChange={onSelectFile} />
+        <label>Добавить файл:</label><br />
+        <input type="file" onChange={onSelectFile} multiple />
     </div>
 );
 

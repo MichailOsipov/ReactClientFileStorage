@@ -1,16 +1,19 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {reduxForm} from 'redux-form';
 import PropTypes from 'prop-types';
 import {sendFile, receiveFile} from 'api/file-service';
-import {autoDownload, transformBytesToUrlObj} from 'utils/file-downloading';
-import {uploadSingleFile, prepareFormData} from 'utils/file-uploading';
+import {autoDownload, zipFilesIfNecessary} from 'utils/file-downloading';
+import {uploadFiles, prepareFormData} from 'utils/file-uploading';
 import {AddFile} from './add-file';
 import {DownloadFile} from './download-file';
-import {userHashSelector} from '../selectors';
+import {userHashSelector} from './selectors';
+import {WHOLE_FILE_READER_FORM_NAME} from './constants';
 
 @connect(state => ({
     userHash: userHashSelector(state)
 }), null)
+@reduxForm({form: WHOLE_FILE_READER_FORM_NAME})
 export class WholeFileReader extends PureComponent {
     static propTypes = {
         userHash: PropTypes.string
@@ -18,8 +21,8 @@ export class WholeFileReader extends PureComponent {
     state = {hash: null};
 
     sendFileToService = (event) => {
-        const file = event && event.target && event.target.files[0];
-        uploadSingleFile(file)
+        const files = event && event.target && event.target.files;
+        uploadFiles(files)
             .then(prepareFormData('files'))
             .then(sendFile)
             .then(({hash}) => {
@@ -29,7 +32,7 @@ export class WholeFileReader extends PureComponent {
 
     downloadFile = () => {
         receiveFile(this.props.userHash)
-            .then(transformBytesToUrlObj)
+            .then(zipFilesIfNecessary)
             .then(autoDownload);
     }
 
@@ -37,7 +40,7 @@ export class WholeFileReader extends PureComponent {
         const {hash} = this.state;
         return (
             <div>
-                <div>Обработка файлов с помощью Целиком:</div>
+                <div>Обработка файлов целиком:</div>
                 <AddFile onSelectFile={this.sendFileToService} />
                 {hash && <div>{`Hash: ${hash}`}</div>}
                 <div>Загрузка файлов:</div>

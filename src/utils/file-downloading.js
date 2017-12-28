@@ -1,9 +1,15 @@
-export function transformBytesToUrlObj({data: {data}, ...rest}) {
-    const {buffer} = Uint8Array.from(data);
-    return {
-        ...rest,
-        urlObj: URL.createObjectURL(new Blob([buffer]))
-    };
+import JSZip from 'jszip';
+
+export function zipFilesIfNecessary(files) {
+    const zip = new JSZip();
+    files.forEach(({name, data: {data}}) => {
+        zip.file(name, new Blob([Uint8Array.from(data).buffer]));
+    });
+    return zip.generateAsync({type: 'blob'})
+        .then(blob => ({
+            name: 'arhive.zip',
+            urlObj: URL.createObjectURL(blob)
+        }));
 }
 
 export function autoDownload({name, urlObj}) {
